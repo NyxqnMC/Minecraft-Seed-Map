@@ -1,57 +1,40 @@
-const seedInput = document.getElementById('seedInput');
-const versionSelect = document.getElementById('versionSelect');
-const generateBtn = document.getElementById('generateBtn');
-const errorMsg = document.getElementById('errorMsg');
-
-let map = L.map('map').setView([0, 0], 2);
-
-// Add background tiles to map
+// script.js
+const map = L.map('map').setView([0, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors'
+  attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-generateBtn.addEventListener('click', () => {
-  const seed = seedInput.value.trim();
-  const version = versionSelect.value;
-  errorMsg.textContent = '';
+document.getElementById('generateBtn').addEventListener('click', async () => {
+  const seed = document.getElementById('seedInput').value.trim();
+  const errorDiv = document.getElementById('error');
+  errorDiv.textContent = '';
 
   if (!seed) {
-    errorMsg.textContent = 'Please enter a seed.';
+    errorDiv.textContent = 'Please enter a valid seed.';
     return;
   }
 
-  // Clear old markers
-  map.eachLayer(layer => {
-    if (layer instanceof L.Marker) map.removeLayer(layer);
-  });
+  try {
+    const response = await fetch(`https://api.mcsrvstat.us/seed/${seed}`);
+    if (!response.ok) throw new Error('Network response was not ok');
 
-  // Fake data (Replace later with real Cubiomes-generated data)
-  const structures = [
-    { type: "Village", x: 200, z: -150 },
-    { type: "Stronghold", x: -400, z: 1200 },
-    { type: "Desert Temple", x: 800, z: -300 }
-  ];
+    const data = await response.json();
 
-  if (structures.length === 0) {
-    errorMsg.textContent = 'No structures found for this seed.';
-    return;
-  }
+    if (!data.structures) {
+      errorDiv.textContent = 'No structure data found for this seed.';
+      return;
+    }
 
-  const markers = [];
-
-  structures.forEach(s => {
-    // Convert Minecraft X,Z to map coords (swap X->Lon, Z->Lat just for demo)
-    const lat = s.z / 100;
-    const lon = s.x / 100;
-
-    const marker = L.marker([lat, lon]).addTo(map);
-    marker.bindPopup(`<strong>${s.type}</strong><br>X:${s.x}, Z:${s.z}`);
-    markers.push([lat, lon]);
-  });
-
-  // Zoom map to fit markers
-  if (markers.length > 0) {
-    const bounds = L.latLngBounds(markers);
-    map.fitBounds(bounds, { padding: [50, 50] });
+    map.setView([0, 0], 2);
+    Object.values(data.structures).forEach(structure => {
+      if (structure.x !== undefined && structure.z !== undefined) {
+        L.marker([structure.z, structure.x])
+          .addTo(map)
+          .bindPopup(`<b>${structure.type}</b><br>X: ${structure.x}, Z: ${structure.z}`);
+      }
+    });
+  } catch (err) {
+    errorDiv.textContent = 'Error fetching data.';
+    console.error(err);
   }
 });
