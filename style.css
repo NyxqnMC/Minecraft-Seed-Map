@@ -1,20 +1,23 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
   text-align: center;
-  background: #202020;
-  color: white;
+  background: #121212;
+  color: #eee;
+  margin: 0;
+  padding: 0;
 }
-
 input, select, button {
   margin: 10px;
-  padding: 10px;
+  padding: 8px 12px;
   font-size: 16px;
 }
-
-#mapContainer {
-  margin-top: 20px;
+#errorMsg {
+  color: #f55;
+  margin: 10px;
+  min-height: 1.2em;
+}
+#map {
+  margin: 20px auto;
   width: 90%;
-  height: 500px;
-  border: 2px solid white;
-  background: black;
+  border: 2px solid #444;
 }
