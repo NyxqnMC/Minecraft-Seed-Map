@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Minecraft Seed Map</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Minecraft SeedMap</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 <body>
-  <h1>Minecraft Seed Map</h1>
-  <input type="text" id="seedInput" placeholder="Enter Seed">
+  <h1>Minecraft SeedMap</h1>
+  <input id="seedInput" type="text" placeholder="Enter a seed (number or text)">
   <select id="versionSelect">
-    <option value="1.21">1.21</option>
+    <option value="1.21">1.21 (Java)</option>
     <option value="1.20">1.20</option>
-    <option value="1.19">1.19</option>
+    <option value="bedrock">Bedrock</option>
   </select>
-  <button id="generateBtn">Generate Map</button>
-  <div id="mapContainer"></div>
+  <button id="generateBtn">Show Structures</button>
+  <div id="errorMsg" role="alert"></div>
+  <div id="map" style="height: 500px;"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
