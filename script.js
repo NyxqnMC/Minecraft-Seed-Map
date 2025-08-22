@@ -1,47 +1,28 @@
 const seedInput = document.getElementById('seedInput');
 const versionSelect = document.getElementById('versionSelect');
 const generateBtn = document.getElementById('generateBtn');
-const errorMsg = document.getElementById('errorMsg');
-const mapDiv = document.getElementById('map');
+const mapContainer = document.getElementById('mapContainer');
 
-let map = L.map(mapDiv).setView([0, 0], 2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data © OpenStreetMap contributors'
-}).addTo(map);
-
-generateBtn.addEventListener('click', async () => {
+generateBtn.addEventListener('click', () => {
   const seed = seedInput.value.trim();
   const version = versionSelect.value;
-  errorMsg.textContent = '';
-  map.eachLayer((layer) => layer !== map.options.layers ? map.removeLayer(layer) : null);
 
   if (!seed) {
-    errorMsg.textContent = 'Please enter a seed.';
+    mapContainer.innerHTML = "<span style='color:red;'>Please enter a seed.</span>";
     return;
   }
 
-  try {
-    // Example: call your own hosted API (or local processing) using cubiomes
-    const response = await fetch(`https://your-api-url/structures?seed=${encodeURIComponent(seed)}&version=${version}`);
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
-    const data = await response.json();
-    if (!data.structures || data.structures.length === 0) {
-      errorMsg.textContent = 'No structures found for this seed/version combination.';
-      return;
-    }
+  // Temporary demo data (replace with real Cubiomes-based calculations later)
+  const structures = [
+    { type: "Village", x: 200, z: -150 },
+    { type: "Stronghold", x: -400, z: 1200 },
+    { type: "Desert Temple", x: 800, z: -300 }
+  ];
 
-    data.structures.forEach(s => {
-      const marker = L.marker([s.z, s.x]).addTo(map);
-      marker.bindPopup(`<strong>${s.type}</strong><br>X: ${s.x}, Z: ${s.z}`);
-    });
-
-    // Fit map to markers
-    const coords = data.structures.map(s => L.latLng(s.z, s.x));
-    const bounds = L.latLngBounds(coords);
-    map.fitBounds(bounds, { padding: [50, 50] });
-
-  } catch (err) {
-    console.error(err);
-    errorMsg.textContent = 'Error retrieving structure data. Please check your seed and version, or try again later.';
-  }
+  let html = `<h2>Seed: ${seed} (Version ${version})</h2><ul>`;
+  structures.forEach(s => {
+    html += `<li>${s.type} at X:${s.x}, Z:${s.z}</li>`;
+  });
+  html += "</ul>";
+  mapContainer.innerHTML = html;
 });
