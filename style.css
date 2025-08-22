@@ -1,0 +1,20 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #202020;
+  color: white;
+}
+
+input, select, button {
+  margin: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+#mapContainer {
+  margin-top: 20px;
+  width: 90%;
+  height: 500px;
+  border: 2px solid white;
+  background: black;
+}
